@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Tracker - Reminders & Notes</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Lato", sans-serif;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .nav-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .nav-tab.active {
+            color: #276436;
+            border-bottom: 2px solid #276436;
+        }
+
+        .nav-tab:hover {
+            color: #276436;
+        }
+
+        h1 {
+            text-align: center;
+            color: #276436;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #276436;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e4f29;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #f1f9f3;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes {
+            background: #fdfdfd;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: red;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="window.location.href='calendar.html'">Calendar</button>
+            <button class="nav-tab active" onclick="window.location.href='reminders.html'">Reminders</button>
+            <button class="nav-tab" onclick="window.location.href='progress.html'">Progress Tracker</button>
+        </div>
+        <h1>Reminders & Notes</h1>
+
+        <div class="section">
+            <h2>📝 To-Do List</h2>
+            <input type="text" id="taskInput" placeholder="Enter a task..." />
+            <button onclick="addTask()">Add Task</button>
+            <ul id="taskList"></ul>
+        </div>
+
+        <div class="section">
+            <h2>🗒️ Notes</h2>
+            <textarea id="noteInput" rows="5" placeholder="Write your notes here..."></textarea>
+            <button onclick="saveNote()">Save Note</button>
+            <div class="notes" id="savedNote"></div>
+        </div>
+    </div>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const taskText = taskInput.value.trim();
+            if (taskText !== "") {
+                const li = document.createElement("li");
+                li.innerHTML = `${taskText} <button class="delete-btn" onclick="this.parentElement.remove()">✖</button>`;
+                document.getElementById("taskList").appendChild(li);
+                taskInput.value = "";
+            }
+        }
+
+        function saveNote() {
+            const noteInput = document.getElementById("noteInput");
+            const savedNote = document.getElementById("savedNote");
+            savedNote.textContent = noteInput.value.trim();
+            noteInput.value = "";
+        }
+    </script>
+</body>
+</html>

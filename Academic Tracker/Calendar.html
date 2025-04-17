@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Tracker - Calendar</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 0;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+        .nav-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #555;
+        }
+        .nav-tab.active {
+            color: #276436;
+            border-bottom: 2px solid #276436;
+        }
+        .nav-tab:hover {
+            color: #276436;
+        }
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th, .calendar td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .calendar th {
+            background-color: #f0f0f0;
+        }
+        .calendar td {
+            cursor: pointer;
+        }
+        .calendar td.active {
+            background-color: #e0f7fa;
+        }
+        #assignmentModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        #assignmentModal label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            text-align: left;
+        }
+        #assignmentModal input[type="text"], #assignmentModal select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        #assignmentModal button {
+            background: #276436;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        #assignmentModal button:hover {
+            background: #1e4f29;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="window.location.href='calendar.html'">Calendar</button>
+            <button class="nav-tab" onclick="window.location.href='reminders.html'">Reminders</button>
+            <button class="nav-tab" onclick="window.location.href='progress.html'">Progress Tracker</button>
+        </div>
+
+        <h2>Academic Calendar</h2>
+        <table class="calendar">
+            <thead>
+                <tr>
+                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                </tr>
+            </thead>
+            <tbody id="calendarBody">
+                </tbody>
+        </table>
+
+        <div id="assignmentModal" style="display: none;">
+            <h3>Add Assignment</h3>
+            <label for="assignmentType">Type:</label>
+            <select id="assignmentType">
+                <option value="homework">Homework</option>
+                <option value="quiz">Quiz</option>
+                <option value="project">Project</option>
+                <option value="exam">Exam</option>
+            </select>
+            <label for="assignmentDetails">Details:</label>
+            <input type="text" id="assignmentDetails">
+            <button onclick="saveAssignment()">Save</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+
+        <div id="overlay" class="overlay"></div>
+    </div>
+
+    <script>
+        const calendarBody = document.getElementById('calendarBody');
+        const assignmentModal = document.getElementById('assignmentModal');
+        const overlay = document.getElementById('overlay');
+        let selectedDate;
+
+        function generateCalendar() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDayOfMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month + 1, 0);
+            const daysInMonth = lastDayOfMonth.getDate();
+            const startingDay = firstDayOfMonth.getDay(); // 0 for Sunday, 1 for Monday, etc.
+
+            calendarBody.innerHTML = '';
+            let date = 1;
+
+            for (let i = 0; i < 6; i++) { // Up to 6 weeks
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < startingDay) {
+                        const cell = document.createElement('td');
+                        row.appendChild(cell);
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        const cell = document.createElement('td');
+                        cell.textContent = date;
+                        cell.addEventListener('click', function() {
+                            selectedDate = new Date(year, month, date).toDateString();
+                            openModal();
+                        });
+                        row.appendChild(cell);
+                        date++;
+                    }
+                }
+                calendarBody.appendChild(row);
+                if (date > daysInMonth) {
+                    break;
+                }
+            }
+        }
+
+        function openModal() {
+            assignmentModal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function closeModal() {
+            assignmentModal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.getElementById('assignmentType').value = 'homework';
+            document.getElementById('assignmentDetails').value = '';
+        }
+
+        function saveAssignment() {
+            const type = document.getElementById('assignmentType').value;
+            const details = document.getElementById('assignmentDetails').value;
+            console.log(`Assignment added for ${selectedDate}: Type - ${type}, Details - ${details}`);
+            closeModal();
+            // In a real application, you would save this data (likely to local storage or a database).
+        }
+
+        generateCalendar();
+    </script>
+</body>
+</html>

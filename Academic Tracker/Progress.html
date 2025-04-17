@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Tracker - Progress Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .nav-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .nav-tab.active {
+            color: black;
+            border-bottom: 2px solid black;
+        }
+
+        .nav-tab:hover {
+            color: black;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: black;
+            color: white;
+        }
+
+        .completed {
+            background-color: #c8e6c9;
+        }
+
+        .in-progress {
+            background-color: #ffeb99;
+        }
+
+        .not-started {
+            background-color: #ffcdd2;
+        }
+
+        .form-container {
+            margin: 20px auto;
+            width: 60%;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+            width: calc(100% - 22px);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Important for padding to be inside the width */
+        }
+
+        button {
+            background: black;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="window.location.href='calendar.html'">Calendar</button>
+            <button class="nav-tab" onclick="window.location.href='reminders.html'">Reminders</button>
+            <button class="nav-tab active" onclick="window.location.href='progress.html'">Progress Tracker</button>
+        </div>
+
+        <h1>Progress Tracker</h1>
+
+        <table id="progressTable">
+            <tr>
+                <th>CLASS</th>
+                <th>OBJECTIVES</th>
+                <th>PROGRESS</th>
+            </tr>
+            <tr>
+                <td rowspan="2">Pre-Calculus</td>
+                <td>Ch 2.1-2.4 Hw</td>
+                <td>
+                    <select onchange="updateProgress(this)">
+                        <option value="not-started" selected>Not Started 😕</option>
+                        <option value="in-progress">In Progress ✍️</option>
+                        <option value="completed">Completed 👍</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Ch 2 Review Guide</td>
+                <td>
+                    <select onchange="updateProgress(this)">
+                        <option value="not-started" selected>Not Started 😕</option>
+                        <option value="in-progress">In Progress ✍️</option>
+                        <option value="completed">Completed 👍</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <div class="form-container">
+            <h2>Add New Assignment</h2>
+            <select id="classSelect" onchange="checkNewClass()">
+                <option value="Pre-Calculus">Pre-Calculus</option>
+                <option value="Tech Writing 1">Tech Writing 1</option>
+                <option value="Programming 2">Programming 2</option>
+                <option value="new-class">➕ Add a New Class</option>
+            </select>
+            <input type="text" id="newClassInput" placeholder="Enter new class name" style="display: none;">
+            <input type="text" id="assignment" placeholder="Enter Assignment">
+            <button onclick="addAssignment()">Add Assignment</button>
+        </div>
+    </div>
+
+    <script>
+        function checkNewClass() {
+            let classSelect = document.getElementById("classSelect");
+            let newClassInput = document.getElementById("newClassInput");
+
+            if (classSelect.value === "new-class") {
+                newClassInput.style.display = "block";
+                newClassInput.focus();
+            } else {
+                newClassInput.style.display = "none";
+            }
+        }
+
+        function addAssignment() {
+            let table = document.getElementById("progressTable");
+            let classSelect = document.getElementById("classSelect");
+            let newClassInput = document.getElementById("newClassInput");
+            let assignmentText = document.getElementById("assignment").value;
+
+            let selectedClass = classSelect.value;
+
+            if (selectedClass === "new-class") {
+                selectedClass = newClassInput.value.trim();
+                if (selectedClass === "") {
+                    alert("Please enter a class name.");
+                    return;
+                }
+
+                // Add new class to dropdown
+                let newOption = document.createElement("option");
+                newOption.value = selectedClass;
+                newOption.textContent = selectedClass;
+                classSelect.insertBefore(newOption, classSelect.lastElementChild);
+                classSelect.value = selectedClass;
+                newClassInput.style.display = "none";
+                newClassInput.value = "";
+            }
+
+            if (assignmentText.trim() === "") {
+                alert("Please enter an assignment.");
+                return;
+            }
+
+            let newRow = table.insertRow(-1);
+            let classCell = newRow.insertCell(0);
+            let assignmentCell = newRow.insertCell(1);
+            let progressCell = newRow.insertCell(2);
+
+            classCell.innerHTML = selectedClass;
+            assignmentCell.innerHTML = assignmentText;
+
+            let progressDropdown = document.createElement("select");
+            progressDropdown.innerHTML = `
+                <option value="not-started" selected>Not Started 😕</option>
+                <option value="in-progress">In Progress ✍️</option>
+                <option value="completed">Completed 👍</option>
+            `;
+            progressDropdown.setAttribute("onchange", "updateProgress(this)");
+
+            progressCell.appendChild(progressDropdown);
+            progressCell.className = "not-started";
+
+            document.getElementById("assignment").value = "";
+        }
+
+        function updateProgress(selectElement) {
+            let row = selectElement.parentNode;
+            let value = selectElement.value;
+
+            row.className = value === "completed" ? "completed" :
+                            value === "in-progress" ? "in-progress" :
+                            "not-started";
+        }
+    </script>
+</body>
+</html>
