@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Tracker - Progress Tracker</title>
+    <style>
+        /* Consistent base styles from other pages */
+        body {
+            font-family: "Lato", sans-serif; /* Consistent font */
+            margin: 0;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9); /* Consistent background */
+            color: #333;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Updated Navigation CSS --- */
+        .nav-tabs {
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Vertically align items */
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+        .nav-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #555;
+            text-decoration: none;
+            display: inline-block;
+            border-bottom: 2px solid transparent; /* Reserve space */
+            margin-bottom: -2px; /* Align with container border */
+        }
+        .nav-tab.active {
+            color: #276436;
+            border-bottom: 2px solid #276436;
+            font-weight: bold;
+        }
+        .nav-tab:hover:not(.active):not(.logout-tab) { /* Don't underline active/logout on hover */
+            color: #276436;
+            border-bottom: 2px solid #ccc; /* Subtle hover indication */
+        }
+
+        /* Logout Tab Specific Styles */
+        .logout-tab {
+            margin-left: auto; /* Pushes the logout tab to the right */
+            color: #d32f2f; /* Red color for logout */
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 8px 12px; /* Slightly different padding */
+            border: 1px solid transparent; /* Placeholder for hover */
+        }
+        .logout-tab:hover {
+            background-color: #ffebee; /* Light red background on hover */
+            color: #c62828;
+            border-color: #ef9a9a;
+            text-decoration: none; /* Remove underline */
+            border-bottom: 2px solid transparent; /* Override general hover */
+        }
+        /* --- End of Updated Navigation CSS --- */
+
+
+        /* Consistent Heading Style */
+         h1, h2 {
+            color: #276436;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Updated Table Styles */
+        table {
+            width: 100%; /* Use full width within container */
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd; /* Lighter borders */
+            padding: 12px; /* More padding */
+            text-align: left;
+            vertical-align: middle; /* Align select box nicely */
+        }
+
+        th {
+            background-color: #f0f0f0; /* Lighter header background */
+            color: #333; /* Darker text for header */
+            font-weight: bold;
+        }
+
+         /* Zebra striping for readability */
+        tr:nth-child(even) td:not(.completed):not(.in-progress):not(.not-started) {
+             background-color: #f9f9f9;
+        }
+         /* Ensure progress cells override striping */
+         tr td.completed { background-color: #c8e6c9; }
+         tr td.in-progress { background-color: #ffeb99; }
+         tr td.not-started { background-color: #ffcdd2; }
+
+
+        /* Form Container Styles (minor adjustments) */
+        .form-container {
+            margin: 30px auto 20px auto; /* More space above */
+            width: 80%; /* Wider form */
+            max-width: 600px; /* Max width */
+            background: #f9f9f9; /* Slightly off-white background */
+            padding: 20px; /* More padding */
+            border-radius: 8px; /* Consistent radius */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Softer shadow */
+            border: 1px solid #eee; /* Subtle border */
+        }
+
+        /* Consistent Form Element Styles */
+        .form-container input[type="text"],
+        .form-container select {
+            padding: 10px;
+            margin-bottom: 10px; /* Use margin-bottom */
+            width: 100%; /* Use 100% width */
+            border: 1px solid #ccc;
+            border-radius: 8px; /* Consistent radius */
+            box-sizing: border-box;
+            font-size: 16px;
+            display: block; /* Ensure they take full width */
+        }
+
+        /* Style the progress dropdown specifically */
+        td select {
+             padding: 8px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+             font-size: 14px;
+        }
+
+
+        /* Consistent Button Style */
+        .form-container button {
+            background: #276436; /* Consistent button color */
+            color: white;
+            padding: 12px 25px; /* Consistent padding */
+            border: none;
+            border-radius: 8px; /* Consistent radius */
+            cursor: pointer;
+            font-size: 16px;
+            display: block; /* Make button take full width */
+            width: 100%; /* Full width */
+            margin-top: 10px; /* Space above button */
+            transition: background-color 0.2s ease;
+        }
+
+        .form-container button:hover {
+            background: #1e4f29; /* Consistent hover color */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 95%;
+                padding: 15px;
+            }
+            .nav-tabs {
+                font-size: 14px;
+            }
+             /* Add responsive rules for nav tabs */
+            .nav-tab { padding: 8px 10px; }
+            .logout-tab { padding: 6px 10px; }
+
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            td select {
+                font-size: 13px;
+                padding: 6px;
+            }
+            .form-container {
+                width: 95%;
+                padding: 15px;
+            }
+            .form-container input[type="text"],
+            .form-container select,
+            .form-container button {
+                 font-size: 14px;
+             }
+             .form-container button {
+                 padding: 10px 20px;
+             }
+            h1, h2 {
+                 font-size: 1.5em;
+             }
+        }
+         @media (max-width: 480px) {
+             /* Add responsive rules for nav tabs */
+            .nav-tab { font-size: 12px; padding: 6px 8px; }
+            .logout-tab { font-size: 12px; padding: 5px 8px; }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="nav-tabs">
+            <a href="calendar.html" class="nav-tab">Calendar</a>
+            <a href="reminders.html" class="nav-tab">Reminders</a>
+            <a href="progress.html" class="nav-tab active">Progress Tracker</a> <a href="Grade.html" class="nav-tab">Grades</a>
+            <a href="account.html" class="nav-tab">Account</a>
+            <a href="Login.html" class="nav-tab logout-tab">Logout</a>
+        </div>
+         <h1>Progress Tracker</h1>
+
+        <table id="progressTable">
+             <thead>
+                <tr>
+                    <th>CLASS</th>
+                    <th>OBJECTIVES</th>
+                    <th>PROGRESS</th>
+                </tr>
+             </thead>
+             <tbody>
+                <tr>
+                    <td>Pre-Calculus</td>
+                    <td>Ch 2.1-2.4 Hw</td>
+                    <td class="not-started">
+                        <select onchange="updateProgress(this)">
+                            <option value="not-started" selected>Not Started 😕</option>
+                            <option value="in-progress">In Progress ✍️</option>
+                            <option value="completed">Completed 👍</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pre-Calculus</td>
+                    <td>Ch 2 Review Guide</td>
+                    <td class="not-started">
+                        <select onchange="updateProgress(this)">
+                            <option value="not-started" selected>Not Started 😕</option>
+                            <option value="in-progress">In Progress ✍️</option>
+                            <option value="completed">Completed 👍</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+        </table>
+
+        <div class="form-container">
+            <h2>Add New Assignment</h2>
+            <select id="classSelect" onchange="checkNewClass()">
+                <option value="Pre-Calculus">Pre-Calculus</option>
+                <option value="Tech Writing 1">Tech Writing 1</option>
+                <option value="Programming 2">Programming 2</option>
+                <option value="new-class">➕ Add a New Class</option>
+            </select>
+            <input type="text" id="newClassInput" placeholder="Enter new class name" style="display: none;">
+            <input type="text" id="assignment" placeholder="Enter Assignment Details">
+            <button onclick="addAssignment()">Add Assignment</button>
+        </div>
+    </div>
+
+    <script>
+        function checkNewClass() {
+            let classSelect = document.getElementById("classSelect");
+            let newClassInput = document.getElementById("newClassInput");
+
+            if (classSelect.value === "new-class") {
+                newClassInput.style.display = "block";
+                newClassInput.focus();
+            } else {
+                newClassInput.style.display = "none";
+            }
+        }
+
+        function addAssignment() {
+            let tableBody = document.getElementById("progressTable").getElementsByTagName('tbody')[0];
+            let classSelect = document.getElementById("classSelect");
+            let newClassInput = document.getElementById("newClassInput");
+            let assignmentText = document.getElementById("assignment").value;
+            let selectedClass = classSelect.value;
+
+            if (selectedClass === "new-class") {
+                selectedClass = newClassInput.value.trim();
+                if (selectedClass === "") {
+                    alert("Please enter a class name.");
+                    return;
+                }
+                let exists = false;
+                for(let i = 0; i < classSelect.options.length; i++) {
+                    if (classSelect.options[i].value === selectedClass) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    let newOption = document.createElement("option");
+                    newOption.value = selectedClass;
+                    newOption.textContent = selectedClass;
+                    classSelect.insertBefore(newOption, classSelect.options[classSelect.options.length - 1]);
+                }
+                classSelect.value = selectedClass;
+                newClassInput.style.display = "none";
+                newClassInput.value = "";
+            }
+
+            if (assignmentText.trim() === "") {
+                alert("Please enter assignment details.");
+                return;
+            }
+
+            let newRow = tableBody.insertRow(-1);
+            let classCell = newRow.insertCell(0);
+            let assignmentCell = newRow.insertCell(1);
+            let progressCell = newRow.insertCell(2);
+
+            classCell.innerHTML = selectedClass;
+            assignmentCell.innerHTML = assignmentText;
+
+            let progressDropdown = document.createElement("select");
+            progressDropdown.innerHTML = `
+                <option value="not-started" selected>Not Started 😕</option>
+                <option value="in-progress">In Progress ✍️</option>
+                <option value="completed">Completed 👍</option>
+            `;
+            progressDropdown.setAttribute("onchange", "updateProgress(this)");
+            progressCell.appendChild(progressDropdown);
+            progressCell.className = "not-started"; // Set initial class
+
+            document.getElementById("assignment").value = "";
+            console.log(`Assignment Added (Frontend Only): Class - ${selectedClass}, Details - ${assignmentText}`);
+            // In a real app, send data to backend here
+        }
+
+        function updateProgress(selectElement) {
+            let progressCell = selectElement.parentNode;
+            let selectedValue = selectElement.value;
+            progressCell.className = selectedValue; // Update TD class
+
+            let row = progressCell.parentNode;
+            let assignmentDetails = row.cells[1].textContent;
+            console.log(`Progress Updated (Frontend Only): Assignment "${assignmentDetails}" set to ${selectedValue}`);
+            // In a real app, send update to backend here
+        }
+
+         document.addEventListener('DOMContentLoaded', () => {
+             const progressSelects = document.querySelectorAll('#progressTable tbody select');
+             progressSelects.forEach(select => {
+                 updateProgress(select); // Set initial class based on default selection
+             });
+             // Optional: Load assignments from localStorage or backend here
+         });
+
+         // Optional: Save state to localStorage before unload
+         // window.addEventListener('beforeunload', () => { ... });
+
+    </script>
+</body>
+</html>
