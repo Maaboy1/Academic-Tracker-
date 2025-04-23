@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic Tracker - Calendar</title>
     <style>
+        /* Base styles */
         body {
             font-family: "Lato", sans-serif;
             margin: 0;
@@ -19,8 +21,11 @@
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
+
+        /* Navigation */
         .nav-tabs {
-            display: flex;
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Vertically align items */
             margin-bottom: 20px;
             border-bottom: 2px solid #ccc;
         }
@@ -31,32 +36,148 @@
             background: none;
             font-size: 16px;
             color: #555;
+            text-decoration: none;
+            display: inline-block;
+            border-bottom: 2px solid transparent; /* Reserve space */
+            margin-bottom: -2px; /* Align with container border */
         }
         .nav-tab.active {
             color: #276436;
             border-bottom: 2px solid #276436;
+            font-weight: bold;
         }
-        .nav-tab:hover {
+        .nav-tab:hover:not(.active):not(.logout-tab) { /* Don't underline active/logout on hover */
             color: #276436;
+            border-bottom: 2px solid #ccc; /* Subtle hover indication */
         }
+
+        /* Logout Tab Specific Styles */
+        .logout-tab {
+            margin-left: auto; /* Pushes the logout tab to the right */
+            color: #d32f2f; /* Red color for logout */
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 8px 12px; /* Slightly different padding */
+            border: 1px solid transparent; /* Placeholder for hover */
+        }
+        .logout-tab:hover {
+            background-color: #ffebee; /* Light red background on hover */
+            color: #c62828;
+            border-color: #ef9a9a;
+            text-decoration: none; /* Remove underline */
+        }
+
+
+        /* Page Title */
+        h2 {
+             color: #276436;
+             text-align: center;
+             margin-bottom: 20px;
+        }
+
+        /* Calendar Styles */
         .calendar {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 30px; /* Space before assignment list */
         }
         .calendar th, .calendar td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 8px; /* Adjust padding */
+            height: 80px; /* Give cells some height */
             text-align: center;
+            vertical-align: top; /* Align date number to top */
+            position: relative; /* For positioning markers */
         }
         .calendar th {
             background-color: #f0f0f0;
+            font-weight: bold;
+            padding: 10px;
         }
         .calendar td {
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
-        .calendar td.active {
-            background-color: #e0f7fa;
+        .calendar td:hover {
+            background-color: #f9f9f9;
         }
+        .calendar td.other-month { /* Style for days not in the current month */
+            color: #ccc;
+            background-color: #fafafa;
+            cursor: default;
+        }
+         .calendar td.today { /* Style for today's date */
+            background-color: #e8f5e9;
+            font-weight: bold;
+        }
+        .calendar .day-number {
+            font-size: 0.9em;
+            text-align: left;
+            padding: 3px;
+            display: block;
+        }
+        .calendar .assignment-marker {
+            display: block; /* Changed from inline-block */
+            font-size: 0.75em;
+            padding: 2px 4px;
+            margin-top: 4px; /* Space below day number */
+            margin-left: 2px;
+            margin-right: 2px;
+            border-radius: 4px;
+            color: white;
+            overflow: hidden; /* Prevent long text overflow */
+            text-overflow: ellipsis; /* Add ellipsis for overflow */
+            white-space: nowrap; /* Keep on one line */
+            text-align: left;
+        }
+        /* Different colors for assignment types */
+        .assignment-marker.homework { background-color: #4CAF50; } /* Green */
+        .assignment-marker.quiz { background-color: #2196F3; } /* Blue */
+        .assignment-marker.project { background-color: #ff9800; } /* Orange */
+        .assignment-marker.exam { background-color: #f44336; } /* Red */
+
+
+        /* Assignment List Styles */
+        #assignmentListContainer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+         #assignmentListContainer h3 {
+             color: #276436;
+             text-align: center;
+             margin-bottom: 15px;
+         }
+        #assignmentList {
+            list-style: none;
+            padding: 0;
+        }
+        #assignmentList li {
+            background: #f1f9f3;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 5px solid #276436; /* Accent border */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+         #assignmentList li .details {
+             flex-grow: 1; /* Allow details to take up space */
+             margin-left: 10px;
+         }
+         #assignmentList li .date {
+             font-weight: bold;
+             min-width: 100px; /* Ensure date alignment */
+         }
+         #assignmentList li .type {
+             font-style: italic;
+             color: #555;
+             margin-left: 10px;
+         }
+
+
+        /* Modal Styles */
         #assignmentModal {
             display: none;
             position: fixed;
@@ -64,24 +185,39 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: #fff;
-            padding: 20px;
+            padding: 30px; /* Increased padding */
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
+            width: 90%; /* Responsive width */
+            max-width: 400px; /* Max width */
+        }
+        #assignmentModal h3 {
+            text-align: center;
+            color: #276436;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
         #assignmentModal label {
             display: block;
             margin-bottom: 5px;
             color: #555;
             text-align: left;
+            font-weight: bold;
         }
         #assignmentModal input[type="text"], #assignmentModal select {
-            width: calc(100% - 22px);
+            width: 100%; /* Full width */
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Increased margin */
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 16px;
+            box-sizing: border-box; /* Include padding in width */
+        }
+        #assignmentModal .modal-buttons {
+            display: flex;
+            justify-content: space-between; /* Space out buttons */
+            margin-top: 20px;
         }
         #assignmentModal button {
             background: #276436;
@@ -91,11 +227,20 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            margin-right: 10px;
+            transition: background-color 0.2s ease;
+            flex-basis: 48%; /* Make buttons roughly equal width */
         }
+         #assignmentModal button.cancel-btn {
+             background-color: #aaa;
+         }
         #assignmentModal button:hover {
             background: #1e4f29;
         }
+         #assignmentModal button.cancel-btn:hover {
+             background-color: #888;
+         }
+
+        /* Overlay */
         .overlay {
             display: none;
             position: fixed;
@@ -106,17 +251,52 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+
+         /* Responsive */
+         @media (max-width: 768px) {
+            .container {
+                 max-width: 95%;
+                 padding: 15px;
+            }
+            .nav-tabs {
+                 font-size: 14px;
+            }
+            .nav-tab { padding: 8px 10px; } /* Adjust padding */
+            .logout-tab { padding: 6px 10px; } /* Adjust padding */
+
+            .calendar th, .calendar td {
+                 padding: 5px;
+                 height: 60px; /* Adjust height */
+                 font-size: 0.9em;
+            }
+             .calendar .assignment-marker {
+                 font-size: 0.7em;
+                 padding: 1px 3px;
+                 margin-top: 2px;
+             }
+             h2 { font-size: 1.5em; }
+             #assignmentList li { padding: 10px; font-size: 0.9em; }
+             #assignmentList li .date { min-width: 80px; }
+         }
+         @media (max-width: 480px) {
+            .nav-tab { font-size: 12px; padding: 6px 8px; } /* Smaller font on very small screens */
+            .logout-tab { font-size: 12px; padding: 5px 8px; }
+         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="window.location.href='calendar.html'">Calendar</button>
-            <button class="nav-tab" onclick="window.location.href='reminders.html'">Reminders</button>
-            <button class="nav-tab" onclick="window.location.href='progress.html'">Progress Tracker</button>
+            <a href="calendar.html" class="nav-tab active">Calendar</a>
+            <a href="reminders.html" class="nav-tab">Reminders</a>
+            <a href="progress.html" class="nav-tab">Progress Tracker</a>
+            <a href="grades.html" class="nav-tab">Grades</a>
+            <a href="account.html" class="nav-tab">Account</a>
+            <a href="Login.html" class="nav-tab logout-tab">Logout</a>
         </div>
 
         <h2>Academic Calendar</h2>
+
         <table class="calendar">
             <thead>
                 <tr>
@@ -127,69 +307,155 @@
                 </tbody>
         </table>
 
-        <div id="assignmentModal" style="display: none;">
+        <div id="assignmentListContainer">
+            <h3>Upcoming Assignments</h3>
+            <ul id="assignmentList">
+                </ul>
+        </div>
+
+        <div id="assignmentModal">
             <h3>Add Assignment</h3>
-            <label for="assignmentType">Type:</label>
+            <input type="hidden" id="selectedDateInput"> <label for="assignmentType">Type:</label>
             <select id="assignmentType">
                 <option value="homework">Homework</option>
                 <option value="quiz">Quiz</option>
                 <option value="project">Project</option>
                 <option value="exam">Exam</option>
             </select>
+
             <label for="assignmentDetails">Details:</label>
-            <input type="text" id="assignmentDetails">
-            <button onclick="saveAssignment()">Save</button>
-            <button onclick="closeModal()">Cancel</button>
+            <input type="text" id="assignmentDetails" placeholder="e.g., Chapter 3 Problems">
+
+            <div class="modal-buttons">
+                <button onclick="saveAssignment()">Save</button>
+                <button onclick="closeModal()" class="cancel-btn">Cancel</button>
+            </div>
         </div>
 
-        <div id="overlay" class="overlay"></div>
+        <div id="overlay" class="overlay" onclick="closeModal()"></div>
     </div>
 
     <script>
         const calendarBody = document.getElementById('calendarBody');
         const assignmentModal = document.getElementById('assignmentModal');
         const overlay = document.getElementById('overlay');
-        let selectedDate;
+        const assignmentList = document.getElementById('assignmentList');
+        const selectedDateInput = document.getElementById('selectedDateInput');
 
+        // --- Data Store (Frontend Simulation) ---
+        let assignments = {}; // { 'YYYY-MM-DD': [ { type: 'homework', details: 'Detail 1' }, ... ] }
+
+        // --- Date Formatting Helper ---
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // --- Calendar Generation ---
         function generateCalendar() {
             const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const firstDayOfMonth = new Date(year, month, 1);
-            const lastDayOfMonth = new Date(year, month + 1, 0);
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const todayString = formatDate(today);
+
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+            const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+
             const daysInMonth = lastDayOfMonth.getDate();
-            const startingDay = firstDayOfMonth.getDay(); // 0 for Sunday, 1 for Monday, etc.
+            const startingDayOfWeek = firstDayOfMonth.getDay();
 
             calendarBody.innerHTML = '';
             let date = 1;
 
-            for (let i = 0; i < 6; i++) { // Up to 6 weeks
+            for (let i = 0; i < 6; i++) {
                 const row = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startingDay) {
-                        const cell = document.createElement('td');
-                        row.appendChild(cell);
+                    const cell = document.createElement('td');
+                    const dayNumberSpan = document.createElement('span');
+                    dayNumberSpan.classList.add('day-number');
+
+                    if (i === 0 && j < startingDayOfWeek) {
+                        cell.classList.add('other-month');
                     } else if (date > daysInMonth) {
-                        break;
+                        cell.classList.add('other-month');
                     } else {
-                        const cell = document.createElement('td');
-                        cell.textContent = date;
+                        const cellDate = new Date(currentYear, currentMonth, date);
+                        const cellDateString = formatDate(cellDate);
+
+                        dayNumberSpan.textContent = date;
+                        cell.appendChild(dayNumberSpan);
+                        cell.dataset.date = cellDateString;
+
+                        if (cellDateString === todayString) {
+                            cell.classList.add('today');
+                        }
+
                         cell.addEventListener('click', function() {
-                            selectedDate = new Date(year, month, date).toDateString();
-                            openModal();
+                            if (!cell.classList.contains('other-month')) { // Only allow clicking on current month days
+                                openModal(cellDateString);
+                            }
                         });
-                        row.appendChild(cell);
+
+                        if (assignments[cellDateString]) {
+                            assignments[cellDateString].forEach(assignment => {
+                                const marker = document.createElement('span');
+                                marker.classList.add('assignment-marker', assignment.type);
+                                marker.textContent = assignment.details;
+                                marker.title = `${assignment.type}: ${assignment.details}`;
+                                cell.appendChild(marker);
+                            });
+                        }
                         date++;
                     }
+                    row.appendChild(cell);
                 }
                 calendarBody.appendChild(row);
-                if (date > daysInMonth) {
-                    break;
+                if (date > daysInMonth && row.children[0].classList.contains('other-month')) {
+                     break;
                 }
             }
         }
 
-        function openModal() {
+        // --- Assignment List Display ---
+        function displayAssignmentList() {
+            assignmentList.innerHTML = '';
+            const allAssignments = [];
+            Object.keys(assignments).forEach(date => {
+                assignments[date].forEach(assign => {
+                    allAssignments.push({ ...assign, date });
+                });
+            });
+
+            allAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            if (allAssignments.length === 0) {
+                 assignmentList.innerHTML = '<li>No assignments added yet. Click a date to add one.</li>';
+                 return;
+            }
+
+            allAssignments.forEach(assignment => {
+                const li = document.createElement('li');
+                const displayDate = new Date(assignment.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                li.innerHTML = `
+                    <span class="date">${displayDate}</span>
+                    <span class="details">${assignment.details}</span>
+                    <span class="type">(${assignment.type})</span>
+                `;
+                assignmentList.appendChild(li);
+            });
+        }
+
+        // --- Modal Functions ---
+        function openModal(dateString) {
+            document.getElementById('assignmentType').value = 'homework';
+            document.getElementById('assignmentDetails').value = '';
+            selectedDateInput.value = dateString;
+
+            const displayDate = new Date(dateString + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            assignmentModal.querySelector('h3').textContent = `Add Assignment for ${displayDate}`;
+
             assignmentModal.style.display = 'block';
             overlay.style.display = 'block';
         }
@@ -197,19 +463,56 @@
         function closeModal() {
             assignmentModal.style.display = 'none';
             overlay.style.display = 'none';
-            document.getElementById('assignmentType').value = 'homework';
-            document.getElementById('assignmentDetails').value = '';
         }
 
+        // --- Save Assignment ---
         function saveAssignment() {
             const type = document.getElementById('assignmentType').value;
-            const details = document.getElementById('assignmentDetails').value;
-            console.log(`Assignment added for ${selectedDate}: Type - ${type}, Details - ${details}`);
+            const details = document.getElementById('assignmentDetails').value.trim();
+            const date = selectedDateInput.value;
+
+            if (!details) {
+                alert("Please enter assignment details.");
+                return;
+            }
+            if (!date) {
+                alert("Error: No date selected.");
+                return;
+            }
+
+            if (!assignments[date]) {
+                assignments[date] = [];
+            }
+            assignments[date].push({ type, details });
+
+            console.log(`Assignment added for ${date}: Type - ${type}, Details - ${details}`);
+            // In a real app, send data to backend here
+
             closeModal();
-            // In a real application, you would save this data (likely to local storage or a database).
+            generateCalendar();
+            displayAssignmentList();
         }
 
-        generateCalendar();
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // You could potentially load saved assignments from localStorage here
+            // for basic persistence without a backend.
+            // Example:
+            // const savedAssignments = localStorage.getItem('academicTrackerAssignments');
+            // if (savedAssignments) {
+            //    assignments = JSON.parse(savedAssignments);
+            // }
+
+            generateCalendar();
+            displayAssignmentList();
+        });
+
+        // Optional: Save assignments to localStorage before page unloads
+        // window.addEventListener('beforeunload', () => {
+        //    localStorage.setItem('academicTrackerAssignments', JSON.stringify(assignments));
+        // });
+
     </script>
 </body>
 </html>
+
