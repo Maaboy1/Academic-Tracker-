@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Tracker - Account Settings</title>
+    <style>
+        /* Navigation Container */
+        .nav-tabs { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ccc; }
+        .nav-tab { padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1em; /* Use em */ color: #555; text-decoration: none; display: inline-block; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; }
+        .nav-tab.active { color: #276436; border-bottom: 2px solid #276436; font-weight: bold; }
+        .nav-tab:hover:not(.active):not(.logout-tab) { color: #276436; border-bottom: 2px solid #ccc; }
+        .logout-tab { margin-left: auto; color: #d32f2f; font-weight: bold; border-radius: 5px; padding: 8px 12px; border: 1px solid transparent; font-size: 1em; /* Use em */ transition: all 0.2s ease; }
+        .logout-tab:hover { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; text-decoration: none; border-bottom: 2px solid transparent; }
+        @media (max-width: 768px) { .nav-tabs { font-size: 14px; } .nav-tab { padding: 8px 10px; } .logout-tab { padding: 6px 10px; } }
+        @media (max-width: 480px) { .nav-tab { font-size: 12px; padding: 6px 8px; } .logout-tab { font-size: 12px; padding: 5px 8px; } }
+
+        /* Base styles */
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 0;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+            font-size: 16px; /* Base font size */
+            transition: font-size 0.3s ease; /* Smooth transition */
+        }
+         /* ---- NEW: Style for larger font size ---- */
+         body.large-font {
+             font-size: 19px; /* Increase base font size (adjust as needed) */
+         }
+         body.large-font .nav-tab, body.large-font .logout-tab { font-size: 1.05em; padding: 11px 16px; }
+         body.large-font button { font-size: 1em; padding: 13px 26px; } /* Adjust button padding */
+         body.large-font input[type="text"],
+         body.large-font input[type="password"],
+         body.large-font input[type="email"],
+         body.large-font input[type="tel"] { font-size: 1em; padding: 11px; }
+         body.large-font label { font-size: 1.05em; }
+         body.large-font small { font-size: 0.9em; }
+         body.large-font .status-message { font-size: 1em; padding: 11px; }
+         /* ---- End of NEW ---- */
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+         h1, h2 { color: #276436; text-align: center; margin-bottom: 25px; }
+         .form-section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+         .form-section:last-child { border-bottom: none; }
+         .form-group { margin-bottom: 15px; }
+         label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
+         input[type="text"], input[type="password"], input[type="email"], input[type="tel"] { width: calc(100% - 22px); padding: 10px; font-size: 1em; /* Use em */ border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+         button { background: #276436; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; /* Use em */ transition: background-color 0.2s ease; margin-top: 10px; }
+         button:hover { background: #1e4f29; }
+         small { display: block; margin-top: 5px; color: #777; font-size: 0.9em; }
+         .status-message { margin-top: 10px; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; display: none; }
+         .status-message.success { background-color: #d4edda; color: #155724; display: block; }
+         .status-message.error { background-color: #f8d7da; color: #721c24; display: block; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body.large-font { font-size: 18px; }
+            .container { max-width: 95%; padding: 15px; }
+             input[type="text"], input[type="password"], input[type="email"], input[type="tel"] { padding: 9px; }
+             button { padding: 11px 22px; }
+            h1, h2 { font-size: 1.5em; }
+        }
+        @media (max-width: 480px) {
+            body.large-font { font-size: 17px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="nav-tabs">
+             <a href="calendar.html" class="nav-tab">Calendar</a>
+             <a href="reminders.html" class="nav-tab">Reminders</a>
+             <a href="progress.html" class="nav-tab">Progress Tracker</a>
+             <a href="Grade.html" class="nav-tab">Grades</a>
+             <a href="account.html" class="nav-tab active">Account</a>
+             <a href="Login.html" class="nav-tab logout-tab">Logout</a>
+         </div>
+
+        <h1>Account Settings</h1>
+
+        <div class="form-section">
+            <h2>Update Email</h2>
+            <form id="emailForm">
+                <div class="form-group">
+                    <label for="currentEmail">Current Email:</label>
+                    <input type="email" id="currentEmail" name="currentEmail" readonly value="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="newEmail">New Email:</label>
+                    <input type="email" id="newEmail" name="newEmail" required>
+                </div>
+                 <div class="form-group">
+                    <label for="emailPassword">Confirm Password:</label>
+                    <input type="password" id="emailPassword" name="emailPassword" required>
+                    <small>Enter your current password to confirm changes.</small>
+                </div>
+                <button type="submit">Update Email</button>
+                <p id="emailStatus" class="status-message"></p>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Change Password</h2>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password:</label>
+                    <input type="password" id="currentPassword" name="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit">Change Password</button>
+                 <p id="passwordStatus" class="status-message"></p>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>SMS Reminders</h2>
+             <form id="phoneForm">
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g., 555-123-4567">
+                    <small>Enter your phone number to receive SMS reminders. Standard message rates may apply.</small>
+                </div>
+                <button type="submit">Save Phone Number</button>
+                 <p id="phoneStatus" class="status-message"></p>
+             </form>
+        </div>
+        </div>
+
+    <script>
+        // --- NEW: Font Size Logic (Apply on Load) ---
+        const FONT_SIZE_KEY = 'academicTrackerFontSizePref';
+        function applyFontSizePreference() {
+            const preference = localStorage.getItem(FONT_SIZE_KEY);
+            if (preference === 'large') {
+                document.body.classList.add('large-font');
+            } else {
+                document.body.classList.remove('large-font');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', applyFontSizePreference);
+        // --- End of NEW ---
+
+        // --- Existing Account Page JavaScript ---
+        document.getElementById('passwordForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Stop page reload
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const statusElement = document.getElementById('passwordStatus');
+
+            statusElement.textContent = 'Processing...';
+            statusElement.className = 'status-message'; // Reset classes
+
+            if (newPassword !== confirmPassword) {
+                 statusElement.textContent = 'New passwords do not match!';
+                 statusElement.classList.add('error');
+                return;
+            }
+            // --- Placeholder for API call ---
+            console.log('Sending password change request to backend...');
+             setTimeout(() => {
+                 if (currentPassword === "password123") { // Simulate success
+                      statusElement.textContent = 'Password updated successfully! (Demo)';
+                      statusElement.classList.add('success');
+                      document.getElementById('passwordForm').reset();
+                 } else { // Simulate error
+                      statusElement.textContent = 'Error: Incorrect current password (Demo)';
+                      statusElement.classList.add('error');
+                 }
+             }, 1000);
+        });
+        // Add similar listeners for emailForm and phoneForm if needed
+        console.log("Account page loaded. Need JS to handle form submissions via API.");
+    </script>
+</body>
+</html>

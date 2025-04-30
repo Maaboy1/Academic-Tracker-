@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Tracker - Login</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+            display: flex;
+            flex-direction: column; /* Align items vertically */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-size: 16px; /* Base font size */
+            transition: font-size 0.3s ease; /* Smooth transition for font size change */
+        }
+        /* ---- NEW: Style for larger font size ---- */
+        body.large-font {
+            font-size: 19px; /* Increase base font size (adjust as needed) */
+        }
+        body.large-font .login-container {
+             width: 450px; /* Slightly wider container for larger text */
+        }
+        /* ---- End of NEW ---- */
+
+        /* --- NEW: Accessibility Button Style --- */
+        .accessibility-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10; /* Ensure it's above other content */
+        }
+         .accessibility-controls button {
+            background: #555;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* Keep button font size reasonable */
+            transition: background-color 0.2s ease;
+         }
+         .accessibility-controls button:hover {
+             background: #333;
+         }
+        /* --- End of NEW --- */
+
+        .login-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            text-align: center;
+            margin-top: 50px; /* Add some margin from the top button */
+        }
+        h1 {
+            color: #276436;
+            margin-bottom: 20px;
+            /* font-size will inherit or be overridden by .large-font body */
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            text-align: left;
+            /* font-size will inherit */
+        }
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            font-size: 1em; /* Use em to scale with body font-size */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button[type="submit"] { /* Be more specific for the login button */
+            background: #276436;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em; /* Use em */
+        }
+        button[type="submit"]:hover {
+            background: #1e4f29;
+        }
+        .register-link {
+            margin-top: 15px;
+            font-size: 0.9em; /* Use em */
+            color: #555;
+        }
+        .register-link a {
+            color: #276436;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+         /* Responsive adjustments */
+         @media (max-width: 768px) {
+             body.large-font { font-size: 18px; }
+         }
+         @media (max-width: 480px) {
+             body.large-font { font-size: 17px; }
+         }
+    </style>
+</head>
+<body>
+    <div class="accessibility-controls">
+        <button id="increaseFontBtn">Increase Font Size</button>
+    </div>
+    <div class="login-container">
+        <h1>Academic Tracker</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div class="register-link">
+            Don't have an account? <a href="register.html">Register here</a>
+        </div>
+    </div>
+
+    <script>
+        // --- NEW: Font Size Logic ---
+        const FONT_SIZE_KEY = 'academicTrackerFontSizePref';
+        const increaseFontBtn = document.getElementById('increaseFontBtn'); // Defined once
+
+        function applyFontSizePreference() {
+            const preference = localStorage.getItem(FONT_SIZE_KEY);
+            if (preference === 'large') {
+                document.body.classList.add('large-font');
+                if (increaseFontBtn) increaseFontBtn.textContent = 'Reset Font Size'; // Update button text
+            } else {
+                document.body.classList.remove('large-font');
+                 if (increaseFontBtn) increaseFontBtn.textContent = 'Increase Font Size'; // Update button text
+            }
+        }
+
+        function toggleFontSize() {
+            const currentPreference = localStorage.getItem(FONT_SIZE_KEY);
+            if (currentPreference === 'large') {
+                localStorage.removeItem(FONT_SIZE_KEY); // Or set to 'normal'
+            } else {
+                localStorage.setItem(FONT_SIZE_KEY, 'large');
+            }
+            applyFontSizePreference(); // Apply the change immediately
+        }
+
+        // Apply on initial load
+        document.addEventListener('DOMContentLoaded', applyFontSizePreference);
+
+         // Attach listener to the button
+         if (increaseFontBtn) {
+              increaseFontBtn.addEventListener('click', toggleFontSize);
+         }
+        // --- End of NEW ---
+
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // In a real application, you would send this data to a server for authentication.
+            // For this example, we'll just redirect to the calendar page.
+            window.location.href = 'calendar.html';
+        });
+    </script>
+</body>
+</html>
