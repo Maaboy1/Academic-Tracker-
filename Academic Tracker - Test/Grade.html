@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Tracker - Grades</title>
+    <style>
+        /* Navigation Container */
+        .nav-tabs { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ccc; }
+        .nav-tab { padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1em; /* Use em */ color: #555; text-decoration: none; display: inline-block; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; }
+        .nav-tab.active { color: #276436; border-bottom: 2px solid #276436; font-weight: bold; }
+        .nav-tab:hover:not(.active):not(.logout-tab) { color: #276436; border-bottom: 2px solid #ccc; }
+        .logout-tab { margin-left: auto; color: #d32f2f; font-weight: bold; border-radius: 5px; padding: 8px 12px; border: 1px solid transparent; font-size: 1em; /* Use em */ transition: all 0.2s ease; }
+        .logout-tab:hover { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; text-decoration: none; border-bottom: 2px solid transparent; }
+        @media (max-width: 768px) { .nav-tabs { font-size: 14px; } .nav-tab { padding: 8px 10px; } .logout-tab { padding: 6px 10px; } }
+        @media (max-width: 480px) { .nav-tab { font-size: 12px; padding: 6px 8px; } .logout-tab { font-size: 12px; padding: 5px 8px; } }
+
+        /* Base styles */
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 0;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+            font-size: 16px; /* Base font size */
+            transition: font-size 0.3s ease; /* Smooth transition */
+        }
+         /* ---- NEW: Style for larger font size ---- */
+         body.large-font {
+             font-size: 19px; /* Increase base font size (adjust as needed) */
+         }
+         body.large-font .nav-tab, body.large-font .logout-tab { font-size: 1.05em; padding: 11px 16px; }
+         body.large-font th, body.large-font td { font-size: 1em; padding: 13px; } /* Adjust table font size/padding */
+         body.large-font h1, body.large-font h2 { font-size: 1.8em; } /* Increase heading size */
+         body.large-font .grade-summary h3 { font-size: 1.2em; }
+         /* ---- End of NEW ---- */
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+         h1, h2 { color: #276436; text-align: center; margin-bottom: 20px; }
+         table { width: 100%; margin: 20px auto; border-collapse: collapse; background: white; }
+         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; font-size: 1em; /* Use em */}
+         th { background-color: #f0f0f0; color: #333; font-weight: bold; }
+         tr:nth-child(even) { background-color: #f9f9f9; }
+         .grade-summary { margin-top: 30px; padding: 15px; background-color: #e8f5e9; border-radius: 8px; text-align: center; }
+         .grade-summary h3 { margin-top: 0; color: #1b5e20; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+             body.large-font { font-size: 18px; }
+            .container { max-width: 95%; padding: 15px; }
+            th, td { padding: 9px; }
+            h1, h2 { font-size: 1.5em; }
+             body.large-font h1, body.large-font h2 { font-size: 1.7em; }
+        }
+         @media (max-width: 480px) {
+             body.large-font { font-size: 17px; }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="nav-tabs">
+            <a href="calendar.html" class="nav-tab">Calendar</a>
+            <a href="reminders.html" class="nav-tab">Reminders</a>
+            <a href="progress.html" class="nav-tab">Progress Tracker</a>
+            <a href="grades.html" class="nav-tab active">Grades</a>
+            <a href="account.html" class="nav-tab">Account</a>
+            <a href="Login.html" class="nav-tab logout-tab">Logout</a>
+         </div>
+
+        <h1>My Grades</h1>
+
+        <h2>Pre-Calculus</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Type</th>
+                    <th>Grade</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ch 2.1-2.4 Hw</td>
+                    <td>Homework</td>
+                    <td>95 / 100</td>
+                    <td>Good work, watch sig figs on #3.</td>
+                </tr>
+                <tr>
+                    <td>Ch 2 Quiz</td>
+                    <td>Quiz</td>
+                    <td>88 / 100</td>
+                    <td>-</td>
+                </tr>
+                </tbody>
+        </table>
+
+        <div class="grade-summary">
+            <h3>Pre-Calculus Overall: 91.5% (A-)</h3>
+        </div>
+
+        <h2>Tech Writing 1</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Type</th>
+                    <th>Grade</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Proposal Draft</td>
+                    <td>Project</td>
+                    <td>A</td>
+                    <td>Well structured.</td>
+                </tr>
+                </tbody>
+        </table>
+         <div class="grade-summary">
+            <h3>Tech Writing 1 Overall: A</h3>
+         </div>
+         </div>
+
+    <script>
+        // --- NEW: Font Size Logic (Apply on Load) ---
+        const FONT_SIZE_KEY = 'academicTrackerFontSizePref';
+        function applyFontSizePreference() {
+            const preference = localStorage.getItem(FONT_SIZE_KEY);
+            if (preference === 'large') {
+                document.body.classList.add('large-font');
+            } else {
+                document.body.classList.remove('large-font');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', applyFontSizePreference);
+        // --- End of NEW ---
+
+        // --- Existing Grade Page JavaScript ---
+        console.log("Grade page loaded. Need JS to fetch data.");
+    </script>
+</body>
+</html>

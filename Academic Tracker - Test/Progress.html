@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Tracker - Progress Tracker</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 0;
+            background: #fefefe;
+            background: linear-gradient(135deg, #e5f3e9, #cfe9d9);
+            color: #333;
+            font-size: 16px; /* Base font size */
+            transition: font-size 0.3s ease; /* Smooth transition */
+        }
+         /* ---- NEW: Style for larger font size ---- */
+         body.large-font {
+             font-size: 19px; /* Increase base font size (adjust as needed) */
+         }
+         body.large-font .nav-tab, body.large-font .logout-tab { font-size: 1.05em; padding: 11px 16px; }
+         body.large-font th, body.large-font td { font-size: 1em; padding: 13px; }
+         body.large-font td select { font-size: 0.95em; padding: 9px; }
+         body.large-font h1, body.large-font h2 { font-size: 1.8em; }
+         body.large-font .form-container { width: 85%; max-width: 650px; }
+         body.large-font .form-container input[type="text"],
+         body.large-font .form-container select { font-size: 1em; padding: 11px; }
+         body.large-font .form-container button { font-size: 1em; padding: 13px 26px; }
+         /* ---- End of NEW ---- */
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Navigation CSS */
+        .nav-tabs { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ccc; }
+        .nav-tab { padding: 10px 15px; cursor: pointer; border: none; background: none; font-size: 1em; /* Use em */ color: #555; text-decoration: none; display: inline-block; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; }
+        .nav-tab.active { color: #276436; border-bottom: 2px solid #276436; font-weight: bold; }
+        .nav-tab:hover:not(.active):not(.logout-tab) { color: #276436; border-bottom: 2px solid #ccc; }
+        .logout-tab { margin-left: auto; color: #d32f2f; font-weight: bold; border-radius: 5px; padding: 8px 12px; border: 1px solid transparent; font-size: 1em; /* Use em */ transition: all 0.2s ease; }
+        .logout-tab:hover { background-color: #ffebee; color: #c62828; border-color: #ef9a9a; text-decoration: none; border-bottom: 2px solid transparent; }
+        @media (max-width: 768px) { .nav-tabs { font-size: 14px; } .nav-tab { padding: 8px 10px; } .logout-tab { padding: 6px 10px; } }
+        @media (max-width: 480px) { .nav-tab { font-size: 12px; padding: 6px 8px; } .logout-tab { font-size: 12px; padding: 5px 8px; } }
+
+        /* Heading Style */
+         h1, h2 { color: #276436; text-align: center; margin-bottom: 20px; }
+        /* Table Styles */
+         table { width: 100%; margin: 20px auto; border-collapse: collapse; background: white; }
+         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: middle; font-size: 1em; /* Use em */}
+         th { background-color: #f0f0f0; color: #333; font-weight: bold; }
+         tr:nth-child(even) td:not(.completed):not(.in-progress):not(.not-started) { background-color: #f9f9f9; }
+         tr td.completed { background-color: #c8e6c9; } tr td.in-progress { background-color: #ffeb99; } tr td.not-started { background-color: #ffcdd2; }
+
+        /* Form Container Styles */
+         .form-container { margin: 30px auto 20px auto; width: 80%; max-width: 600px; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #eee; }
+         .form-container input[type="text"], .form-container select { padding: 10px; margin-bottom: 10px; width: 100%; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1em; /* Use em */ display: block; }
+         td select { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9em; /* Use em */}
+         .form-container button { background: #276436; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; /* Use em */ display: block; width: 100%; margin-top: 10px; transition: background-color 0.2s ease; }
+         .form-container button:hover { background: #1e4f29; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body.large-font { font-size: 18px; }
+            .container { max-width: 95%; padding: 15px; }
+            th, td { padding: 9px; }
+            td select { font-size: 0.9em; }
+            .form-container { width: 95%; padding: 15px; }
+             .form-container button { padding: 11px 22px; }
+            h1, h2 { font-size: 1.5em; }
+            body.large-font h1, body.large-font h2 { font-size: 1.7em; }
+        }
+         @media (max-width: 480px) {
+             body.large-font { font-size: 17px; }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="nav-tabs">
+            <a href="calendar.html" class="nav-tab">Calendar</a>
+            <a href="reminders.html" class="nav-tab">Reminders</a>
+            <a href="progress.html" class="nav-tab active">Progress Tracker</a> <a href="Grade.html" class="nav-tab">Grades</a>
+            <a href="account.html" class="nav-tab">Account</a>
+            <a href="Login.html" class="nav-tab logout-tab">Logout</a>
+        </div>
+         <h1>Progress Tracker</h1>
+
+        <table id="progressTable">
+             <thead>
+                <tr>
+                    <th>CLASS</th>
+                    <th>OBJECTIVES</th>
+                    <th>PROGRESS</th>
+                </tr>
+             </thead>
+             <tbody>
+                <tr>
+                    <td>Pre-Calculus</td>
+                    <td>Ch 2.1-2.4 Hw</td>
+                    <td class="not-started">
+                        <select onchange="updateProgress(this)">
+                            <option value="not-started" selected>Not Started 😕</option>
+                            <option value="in-progress">In Progress ✍️</option>
+                            <option value="completed">Completed 👍</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pre-Calculus</td>
+                    <td>Ch 2 Review Guide</td>
+                    <td class="not-started">
+                        <select onchange="updateProgress(this)">
+                            <option value="not-started" selected>Not Started 😕</option>
+                            <option value="in-progress">In Progress ✍️</option>
+                            <option value="completed">Completed 👍</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+        </table>
+
+        <div class="form-container">
+            <h2>Add New Assignment</h2>
+            <select id="classSelect" onchange="checkNewClass()">
+                <option value="Pre-Calculus">Pre-Calculus</option>
+                <option value="Tech Writing 1">Tech Writing 1</option>
+                <option value="Programming 2">Programming 2</option>
+                <option value="new-class">➕ Add a New Class</option>
+            </select>
+            <input type="text" id="newClassInput" placeholder="Enter new class name" style="display: none;">
+            <input type="text" id="assignment" placeholder="Enter Assignment Details">
+            <button onclick="addAssignment()">Add Assignment</button>
+        </div>
+         </div>
+
+    <script>
+        // --- NEW: Font Size Logic (Apply on Load) ---
+        const FONT_SIZE_KEY = 'academicTrackerFontSizePref';
+        function applyFontSizePreference() {
+            const preference = localStorage.getItem(FONT_SIZE_KEY);
+            if (preference === 'large') {
+                document.body.classList.add('large-font');
+            } else {
+                document.body.classList.remove('large-font');
+            }
+        }
+        // --- End of NEW ---
+
+        // --- Existing Progress Page JavaScript ---
+        function checkNewClass() {
+            let classSelect = document.getElementById("classSelect");
+            let newClassInput = document.getElementById("newClassInput");
+            if (classSelect.value === "new-class") { newClassInput.style.display = "block"; newClassInput.focus(); } else { newClassInput.style.display = "none"; }
+        }
+        function addAssignment() {
+            let tableBody = document.getElementById("progressTable").getElementsByTagName('tbody')[0];
+            let classSelect = document.getElementById("classSelect"); let newClassInput = document.getElementById("newClassInput");
+            let assignmentText = document.getElementById("assignment").value; let selectedClass = classSelect.value;
+            if (selectedClass === "new-class") {
+                selectedClass = newClassInput.value.trim(); if (selectedClass === "") { alert("Please enter a class name."); return; }
+                let exists = false; for(let i = 0; i < classSelect.options.length; i++) { if (classSelect.options[i].value === selectedClass) { exists = true; break; } }
+                if (!exists) { let newOption = document.createElement("option"); newOption.value = selectedClass; newOption.textContent = selectedClass; classSelect.insertBefore(newOption, classSelect.options[classSelect.options.length - 1]); }
+                classSelect.value = selectedClass; newClassInput.style.display = "none"; newClassInput.value = "";
+            }
+            if (assignmentText.trim() === "") { alert("Please enter assignment details."); return; }
+            let newRow = tableBody.insertRow(-1); let classCell = newRow.insertCell(0); let assignmentCell = newRow.insertCell(1); let progressCell = newRow.insertCell(2);
+            classCell.innerHTML = selectedClass; assignmentCell.innerHTML = assignmentText;
+            let progressDropdown = document.createElement("select"); progressDropdown.innerHTML = `<option value="not-started" selected>Not Started 😕</option><option value="in-progress">In Progress ✍️</option><option value="completed">Completed 👍</option>`;
+            progressDropdown.setAttribute("onchange", "updateProgress(this)"); progressCell.appendChild(progressDropdown); progressCell.className = "not-started";
+            document.getElementById("assignment").value = ""; console.log(`Assignment Added (Frontend Only): Class - ${selectedClass}, Details - ${assignmentText}`);
+        }
+        function updateProgress(selectElement) {
+            let progressCell = selectElement.parentNode; let selectedValue = selectElement.value; progressCell.className = selectedValue;
+            let row = progressCell.parentNode; let assignmentDetails = row.cells[1].textContent; console.log(`Progress Updated (Frontend Only): Assignment "${assignmentDetails}" set to ${selectedValue}`);
+        }
+
+         document.addEventListener('DOMContentLoaded', () => {
+             applyFontSizePreference(); // Apply preference first
+             const progressSelects = document.querySelectorAll('#progressTable tbody select');
+             progressSelects.forEach(select => { updateProgress(select); });
+         });
+    </script>
+</body>
+</html>
